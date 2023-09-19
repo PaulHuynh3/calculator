@@ -7,12 +7,77 @@
 
 import SwiftUI
 
+enum CalculatorButton: String {
+    case ac, plusminus, percent, divide
+    case seven, eight, nine, multiply
+    case four, five, six, minue
+    case one, two, three, plus
+    case zero, period, equal
+    
+
+    var title: String {
+        switch self {
+        case .seven:
+           return "7"
+        case .eight:
+            return "8"
+        case .nine:
+            return "9"
+        case .multiply:
+            return "X"
+        case .four:
+            return "4"
+        case .five:
+            return  "5"
+        case .six:
+            return "6"
+        case .minue:
+            return "-"
+        case .one:
+            return "1"
+        case .two:
+            return "2"
+        case .three:
+            return "3"
+        case .plus:
+            return "+"
+        case .zero:
+            return "0"
+        case .period:
+            return "."
+        case .equal:
+            return "="
+        case .ac:
+            return "AC"
+        case .plusminus:
+            return "+-"
+        case .percent:
+            return "%"
+        case .divide:
+            return "/"
+        }
+    }
+    
+    var backgroundColour: Color {
+        switch self {
+        case .ac, .plusminus, .percent:
+            return Color(.darkGray)
+        case .multiply, .divide, .minue, .plus, .equal:
+            return Color(.orange)
+        default:
+            return Color(.lightGray)
+        }
+    }
+    
+}
+
 struct ContentView: View {
-    let buttons = [
-        ["7", "8", "9", "X"],
-        ["4", "5", "6", "-"],
-        ["1", "2", "3", "+"],
-        ["0", ".", ".", "="]
+    let buttons: [[CalculatorButton]] = [
+        [.ac, .plusminus, .percent, .divide],
+        [.seven, .eight, .nine, .multiply],
+        [.four, .five, .six, .minue],
+        [.one, .two, .three, .plus],
+        [.zero, .period, .equal]
     ]
     
     var body: some View {
@@ -29,11 +94,11 @@ struct ContentView: View {
                 ForEach(buttons, id: \.self) { row in
                     HStack {
                         ForEach(row, id: \.self) { button in
-                            Text(button)
+                            Text(button.title)
                                 .font(.system(size: 32))
                                 .frame(width: self.buttonWidth(), height: self.buttonWidth())
                                 .foregroundColor(.white)
-                                .background(Color.yellow)
+                                .background(button.backgroundColour)
                                 .cornerRadius(self.buttonWidth())
                         }
                     }
