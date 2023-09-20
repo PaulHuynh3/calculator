@@ -96,19 +96,24 @@ struct ContentView: View {
                         ForEach(row, id: \.self) { button in
                             Text(button.title)
                                 .font(.system(size: 32))
-                                .frame(width: self.buttonWidth(), height: self.buttonWidth())
+                                .frame(width: self.buttonWidth(button: button), height: (UIScreen.main.bounds.width - 5 * 12) / 4)
                                 .foregroundColor(.white)
                                 .background(button.backgroundColour)
-                                .cornerRadius(self.buttonWidth())
+                                .cornerRadius(self.buttonWidth(button: button))
                         }
                     }
                 }
             }
         }
     }
-    //5 gaps between 4 buttons
-    func buttonWidth() -> CGFloat {
-        return (UIScreen.main.bounds.width - 5 * 12) / 4
+    
+    func buttonWidth(button: CalculatorButton) -> CGFloat {
+        if button == .zero {
+            return (UIScreen.main.bounds.width - 4 * 12) / 4 * 2
+        } else {
+            //5 gaps between 4 buttons
+            return (UIScreen.main.bounds.width - 5 * 12) / 4
+        }
     }
     
 }
