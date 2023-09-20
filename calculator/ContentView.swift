@@ -68,10 +68,21 @@ enum CalculatorButton: String {
             return Color(.lightGray)
         }
     }
+}
+
+//Treat this as a global application state
+//Similar to Singleton useful when we have lots of subViews
+class GlobalEnvironment: ObservableObject {
+    @Published var display = "00"
     
+    func receiveInput(calculateButton: CalculatorButton) {
+        self.display = calculateButton.title
+        
+    }
 }
 
 struct ContentView: View {
+    @EnvironmentObject var env: GlobalEnvironment
     let buttons: [[CalculatorButton]] = [
         [.ac, .plusminus, .percent, .divide],
         [.seven, .eight, .nine, .multiply],
@@ -87,19 +98,14 @@ struct ContentView: View {
             VStack(spacing: 12) {
                 HStack {
                     Spacer()
-                    Text("42")
+                    Text(env.display)
                         .foregroundColor(.white)
                         .font(.system(size: 42))
                 }.padding()
                 ForEach(buttons, id: \.self) { row in
                     HStack {
                         ForEach(row, id: \.self) { button in
-                            Text(button.title)
-                                .font(.system(size: 32))
-                                .frame(width: self.buttonWidth(button: button), height: (UIScreen.main.bounds.width - 5 * 12) / 4)
-                                .foregroundColor(.white)
-                                .background(button.backgroundColour)
-                                .cornerRadius(self.buttonWidth(button: button))
+                            CalculatorButtonView(button: button)
                         }
                     }
                 }
@@ -107,19 +113,37 @@ struct ContentView: View {
         }
     }
     
-    func buttonWidth(button: CalculatorButton) -> CGFloat {
-        if button == .zero {
-            return (UIScreen.main.bounds.width - 4 * 12) / 4 * 2
-        } else {
-            //5 gaps between 4 buttons
-            return (UIScreen.main.bounds.width - 5 * 12) / 4
+    struct ContentView_Previews: PreviewProvider {
+        static var previews: some View {
+            ContentView().environmentObject(GlobalEnvironment())
         }
     }
     
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+    //This is consider a subview
+    struct CalculatorButtonView: View {
+        @EnvironmentObject var env: GlobalEnvironment
+        var button: CalculatorButton
+        
+        var body: some View {
+            Button(button.title) {
+                
+                self.env.receiveInput(calculateButton: button)
+            }
+            .font(.system(size: 32))
+            .frame(width: self.buttonWidth(button: button), height: (UIScreen.main.bounds.width - 5 * 12) / 4)
+            .foregroundColor(.white)
+            .background(button.backgroundColour)
+            .cornerRadius(self.buttonWidth(button: button))
+        }
+        
+        private func buttonWidth(button: CalculatorButton) -> CGFloat {
+            if button == .zero {
+                return (UIScreen.main.bounds.width - 4 * 12) / 4 * 2
+            } else {
+                //5 gaps between 4 buttons
+                return (UIScreen.main.bounds.width - 5 * 12) / 4
+            }
+        }
     }
+    
 }
